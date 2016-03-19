@@ -36,40 +36,41 @@ int DeviceTableSize;
 
 void Init_Symbol_Tables()
 {
-    Reshead=(struct device_s *) malloc(sizeof(struct device_s));
-    Reshead->next=NULL;
-    Restail=Reshead;
-    Caphead=(struct device_s *) malloc(sizeof(struct device_s));
-    Caphead->next=NULL;
-    Captail=Caphead;
+    headRes = (struct device_s *) malloc(sizeof(struct device_s));
+    headRes->next = NULL;
+    tailRes = headRes;
+	
+    headCap = (struct device_s *) malloc(sizeof(struct device_s));
+    headCap->next = NULL;
+    tailCap = headCap;
 
-    CapIChead=(struct device_s *) malloc(sizeof(struct device_s));
-    CapIChead->next=NULL;
-    CapICtail=CapIChead;
+    headCapIC = (struct device_s *) malloc(sizeof(struct device_s));
+    headCapIC->next = NULL;
+    tailCapIC = headCapIC;
 
-    Indhead=(struct device_s *) malloc(sizeof(struct device_s));
-    Indhead->next=NULL;
-    Indtail=Indhead;
+    headInd = (struct device_s *) malloc(sizeof(struct device_s));
+    headInd->next = NULL;
+    tailInd = headInd;
 
-    IndIChead=(struct device_s *) malloc(sizeof(struct device_s));
-    IndIChead->next=NULL;
-    IndICtail=IndIChead;
+    headIndIC = (struct device_s *) malloc(sizeof(struct device_s));
+    headIndIC->next = NULL;
+    tailIndIC = headIndIC;
 
-    Vsrchead=(struct device_s *) malloc(sizeof(struct device_s));
-    Vsrchead->next=NULL;
-    Vsrctail=Vsrchead;
+    headVsrc = (struct device_s *) malloc(sizeof(struct device_s));
+    headVsrc->next = NULL;
+    tailVsrc = headVsrc;
 
-    Isrchead=(struct device_s *) malloc(sizeof(struct device_s));
-    Isrchead->next=NULL;
-    Isrctail=Isrchead;
+    headIsrc = (struct device_s *) malloc(sizeof(struct device_s));
+    headIsrc->next = NULL;
+    tailIsrc = headIsrc;
 
-    VCCShead=(struct device_s *) malloc(sizeof(struct device_s));
-    VCCShead->next=NULL;
-    VCCStail=VCCShead;
+    headVCCS = (struct device_s *) malloc(sizeof(struct device_s));
+    headVCCS->next = NULL;
+    tailVCCS = headVCCS;
 
-    Nodehead=(struct node_s*) malloc(sizeof(struct node_s*) );
-    Nodetail=Nodehead;
-    Nodehead->next=NULL;
+    headNode = (struct node_s*) malloc(sizeof(struct node_s*) );
+    tailNode = headNode;
+    headNode->next = NULL;
 }
 
 
@@ -126,7 +127,7 @@ void Print_Node_Table()
 /*
 void Print_Device_Table()
 {
-    Device_Entry *Print[]={Restail,Caphead,Indhead,Vsrchead,Isrchead,VCCShead};
+    Device_Entry *Print[]={tailRes,headCap,headInd,headVsrc,headIsrc,headVCCS};
     for(int i=0; i<5;i++)
     {
 	do

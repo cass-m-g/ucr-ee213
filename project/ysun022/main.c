@@ -37,7 +37,7 @@ void Call_Parser(char *filename)
 	fclose(inFile);
 
 	Summarize();
-	Nodetail->next=NULL;
+	tailNode->next=NULL;
 	Index_All_Nodes();
 	// Print_Node_Table();
 	// Print_Device_Table();

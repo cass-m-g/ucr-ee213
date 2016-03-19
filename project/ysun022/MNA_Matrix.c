@@ -35,46 +35,46 @@ int NodeSize = 0;
 */
 void Index_All_Nodes()
 {
-	Node_Entry *p; // Nodehead should be given as global parameter
-	Nodeindex *Indexhead, *q, *q2;
-	p = Nodehead;
+	Node_Entry *current; // the head of node is given as global varaiable
+	NodeIndex *headIndex, *cmpIndex, *tailIndex;
+	current = headNode;
 	int index = 0;
 	
-	/*Initial Nodeindex*/
-	Indexhead=(Nodeindex *)malloc(sizeof(Nodeindex));
-	Indexhead->Hash = -1;
-	Indexhead->name = NULL;
-	Indexhead->index = -1;
-	Indexhead->next = NULL;
+	/*Initial NodeIndex*/
+	headIndex=(NodeIndex *)malloc(sizeof(NodeIndex));
+	headIndex->hash = -1;
+	headIndex->name = NULL;
+	headIndex->index = -1;
+	headIndex->next = NULL;
 
-	q2=Indexhead;
-	while(p != Nodetail){
-		int flag = 0;
-		q=Indexhead->next;
+	tailIndex=headIndex;
+	while(current != tailNode){
+		int same = 0;
+		cmpIndex=headIndex->next;
 		
-		while(q !=NULL){    //Scan Nodeindex link table
-	    if(NameHash(p->next->name,nodenum) == q->Hash){   //Compare Hash
-			if(strcmp(p->next->name,q->name)==0){
-				p->next->index = q->index;flag=1;
+		while(cmpIndex !=NULL){    //scan NodeIndex linked table
+	    if(NameHash(current->next->name,nodenum) == cmpIndex->hash){   //compare hash
+			if(strcmp(current->next->name,cmpIndex->name)==0){	//hash same, use exist index and continue
+				current->next->index = cmpIndex->index;
+				same=1;
 			} 
-			//If name is same, use allocated index, break
 		}
-		q=q->next;
+		cmpIndex=cmpIndex->next;
 	}
-		if(flag==0){	// if is new name, allocate index and add to Nodeindex link table. 
-			p->next->index = index;
-			Nodeindex *newnode;
-			newnode=(Nodeindex *)malloc(sizeof(Nodeindex));
-			newnode->name = p->next->name;
-			newnode->Hash = NameHash(p->next->name,nodenum);
-			newnode->index = index;
-			newnode->next = NULL;
-			q2->next=newnode;
-			q2=q2->next;
+		if(same==0){	// if new, assign index and add to NodeIndex link 
+			current->next->index = index;
+			NodeIndex *new;
+			new=(NodeIndex *)malloc(sizeof(NodeIndex));
+			new->name = current->next->name;
+			new->hash = NameHash(current->next->name,nodenum);
+			new->index = index;
+			new->next = NULL;
+			tailIndex->next=new;
+			tailIndex=tailIndex->next;
 
 			index++;
 		}
-	p = p->next;
+	current = current->next;
 	}
         NodeSize = index;
 }
@@ -148,97 +148,73 @@ void Init_MNA_System()
 */
 void Create_MNA_Matrix()
 {
-  Device_Entry *temp;
-  temp = Reshead->next;
+  Device_Entry *current;
   int i = 0;
   int j = 0;
-  //printf("nRes%d\n", nRes);
+  current = headRes->next;
   for (i = 0; i < nRes; i++){		
-    MNAMatrix[temp->nodelist->index][temp->nodelist->index] += 1 / temp->value;
-    MNAMatrix[temp->nodelist->next->index][temp->nodelist->next->index] += 1 / temp->value;
-    MNAMatrix[temp->nodelist->index][temp->nodelist->next->index] += -1 / temp->value;
-    MNAMatrix[temp->nodelist->next->index][temp->nodelist->index] += -1 / temp->value;
-    temp = temp->next;
+    MNAMatrix[current->nodelist->index][current->nodelist->index] += 1 / current->value;
+    MNAMatrix[current->nodelist->next->index][current->nodelist->next->index] += 1 / current->value;
+    MNAMatrix[current->nodelist->index][current->nodelist->next->index] += -1 / current->value;
+    MNAMatrix[current->nodelist->next->index][current->nodelist->index] += -1 / current->value;
+    current = current->next;
   }
-// for (i = 0; i <MatrixSize; i++) {
-// 		for (j = 0; j < MatrixSize; j++) {
-			
-// 			printf("%f\t",MNAMatrix[i][j]);
-
-// 		}printf("\n");
-// 	}
-	// printf("%d %d\n %d %d\n", MNAMatrix[temp->nodelist->index][temp->nodelist->index] ,MNAMatrix[temp->nodelist->index][temp->nodelist->next->index] , MNAMatrix[temp->nodelist->next->index][temp->nodelist->index], MNAMatrix[temp->nodelist->next->index][temp->nodelist->next->index]);
-  temp = Caphead->next;
+  current = headCap->next;
   for (i = 0; i < nCap; i++){		
-    MNAMatrix_image[temp->nodelist->index][temp->nodelist->index] += 1 / temp->value;
-    MNAMatrix_image[temp->nodelist->next->index][temp->nodelist->next->index] += 1 / temp->value;
-    MNAMatrix_image[temp->nodelist->index][temp->nodelist->next->index] += -1 / temp->value;
-    MNAMatrix_image[temp->nodelist->next->index][temp->nodelist->index] += -1 / temp->value;
-    temp = temp->next;
+    MNAMatrix_image[current->nodelist->index][current->nodelist->index] += 1 / current->value;
+    MNAMatrix_image[current->nodelist->next->index][current->nodelist->next->index] += 1 / current->value;
+    MNAMatrix_image[current->nodelist->index][current->nodelist->next->index] += -1 / current->value;
+    MNAMatrix_image[current->nodelist->next->index][current->nodelist->index] += -1 / current->value;
+    current = current->next;
   }
+  // current = headCapIC->next;
   // for (i = 0; i < nCapIC; i++){		
-  //   MNAMatrix_image[temp->nodelist->index][temp->nodelist->index] += 1 / temp->value;
-  //   MNAMatrix_image[temp->nodelist->next->index][temp->nodelist->next->index] += 1 / temp->value;
-  //   MNAMatrix_image[temp->nodelist->index][temp->nodelist->next->index] += -1 / temp->value;
-  //   MNAMatrix_image[temp->nodelist->next->index][temp->nodelist->index] += -1 / temp->value;
-  // 	temp = temp->next;
+  //   MNAMatrix_image[current->nodelist->index][current->nodelist->index] += 1 / current->value;
+  //   MNAMatrix_image[current->nodelist->next->index][current->nodelist->next->index] += 1 / current->value;
+  //   MNAMatrix_image[current->nodelist->index][current->nodelist->next->index] += -1 / current->value;
+  //   MNAMatrix_image[current->nodelist->next->index][current->nodelist->index] += -1 / current->value;
+  //   current = current->next;
   // }
-  temp = Indhead->next;
+  current = headInd->next;
   for (i = 0; i < nInd; i++){		
-    MNAMatrix_image[temp->nodelist->index][temp->nodelist->index] +=  temp->value;
-    MNAMatrix_image[temp->nodelist->next->index][temp->nodelist->next->index] +=  temp->value;
-    MNAMatrix_image[temp->nodelist->index][temp->nodelist->next->index] += -temp->value;
-    MNAMatrix_image[temp->nodelist->next->index][temp->nodelist->index] += -temp->value;
-    temp = temp->next;
+    MNAMatrix_image[current->nodelist->index][current->nodelist->index] +=  current->value;
+    MNAMatrix_image[current->nodelist->next->index][current->nodelist->next->index] +=  current->value;
+    MNAMatrix_image[current->nodelist->index][current->nodelist->next->index] += -current->value;
+    MNAMatrix_image[current->nodelist->next->index][current->nodelist->index] += -current->value;
+    current = current->next;
   }
-  // temp = IndIChead;
-  // 	for (i = 0; i < nCapIC; i++){		
-  //   MNAMatrix_image[temp->nodelist->index][temp->nodelist->index] +=  temp->value;
-  //   MNAMatrix_image[temp->nodelist->next->index][temp->nodelist->next->index] +=  temp->value;
-  //   MNAMatrix_image[temp->nodelist->index][temp->nodelist->next->index] += -temp->value;
-  //   MNAMatrix_image[temp->nodelist->next->index][temp->nodelist->index] += -temp->value;
-  // 	temp = temp->next;
+  // current = headIndIC;
+  // for (i = 0; i < nCapIC; i++){		
+  //   MNAMatrix_image[current->nodelist->index][current->nodelist->index] +=  current->value;
+  //   MNAMatrix_image[current->nodelist->next->index][current->nodelist->next->index] +=  current->value;
+  //   MNAMatrix_image[current->nodelist->index][current->nodelist->next->index] += -current->value;
+  //   MNAMatrix_image[current->nodelist->next->index][current->nodelist->index] += -current->value;
+  //   current = current->next;
   // }
-  temp = Vsrchead->next;
+  current = headVsrc->next;
   for (i = 0; i < nVsrc; i++){
-    MNAMatrix[temp->nodelist->index][NodeSize + i] += 1;
-    MNAMatrix[temp->nodelist->next->index][NodeSize + i] += -1;
-    MNAMatrix[NodeSize + i][temp->nodelist->next->index] += -1;
-    MNAMatrix[NodeSize + i][temp->nodelist->index] += 1;
-    RHS[NodeSize + i] += temp->value;
-    temp = temp->next;
+    MNAMatrix[current->nodelist->index][NodeSize + i] += 1;
+    MNAMatrix[current->nodelist->next->index][NodeSize + i] += -1;
+    MNAMatrix[NodeSize + i][current->nodelist->next->index] += -1;
+    MNAMatrix[NodeSize + i][current->nodelist->index] += 1;
+    RHS[NodeSize + i] += current->value;
+    current = current->next;
   }
-  temp = Isrchead->next;
+  current = headIsrc->next;
   for (i = 0; i < nIsrc; i++){
-    RHS[temp->nodelist->index] += - temp->value;
-    RHS[temp->nodelist->next->index] += temp->value;
-    temp = temp->next;
+    RHS[current->nodelist->index] += - current->value;
+    RHS[current->nodelist->next->index] += current->value;
+    current = current->next;
   }
-  temp = VCCShead->next;
+  current = headVCCS->next;
   for (i = 0; i < nVCCS; i++){
-    MNAMatrix[temp->nodelist->index][temp->nodelist->next->next->index] += temp->value;
-    MNAMatrix[temp->nodelist->index][temp->nodelist->next->next->next->index] += - temp->value;
-    MNAMatrix[temp->nodelist->next->index][temp->nodelist->next->next->index] += - temp->value;
-    MNAMatrix[temp->nodelist->next->index][temp->nodelist->next->next->next->index] += temp->value;
-    temp = temp->next;
+    MNAMatrix[current->nodelist->index][current->nodelist->next->next->index] += current->value;
+    MNAMatrix[current->nodelist->index][current->nodelist->next->next->next->index] += - current->value;
+    MNAMatrix[current->nodelist->next->index][current->nodelist->next->next->index] += - current->value;
+    MNAMatrix[current->nodelist->next->index][current->nodelist->next->next->next->index] += current->value;
+    current = current->next;
   }
 }
-//  for (i = 0; i <MatrixSize; i++) {
-// 		for (j = 0; j < MatrixSize; j++) {
-			
-// 			printf("%f\t",MNAMatrix[i][j]);
-
-// 		}printf("\n");
-// 	}
-// 	printf("\n");
-// 	 for (i = 0; i <MatrixSize; i++) {
-// 		for (j = 0; j < MatrixSize; j++) {
-			
-// 			printf("%f\t",MNAMatrix_image[i][j]);
-
-// 		}printf("\n");
-// 	}
-// }
 
 void Print_MNA_System()
 {

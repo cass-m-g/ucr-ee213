@@ -19,13 +19,13 @@
 #endif
 #define nodenum  100
 
-typedef struct Nodeindex
+typedef struct NodeIndex
 {
-	char *name;	// node name to be allocated
-	int Hash;	// Namehash of node name
-	int index;	// Allocate index to node
-	struct Nodeindex *next;
-} Nodeindex;
+	char *name;	// node name used to detect index conflicts
+	int hash;	// namehash of the node name
+	int index;	// assign index to node
+	struct NodeIndex *next;
+} NodeIndex;
 
 extern int MatrixSize;	// size of the MNA matrix (i.e., the max dimension)
 extern double **MNAMatrix;
