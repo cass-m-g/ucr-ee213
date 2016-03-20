@@ -225,7 +225,7 @@ void ParseVCCS(char *name, char *node1, char *node2, char *node3, char *node4, d
 	deviceVCCS->name = name;
 	deviceVCCS->numnodes = 4;
 	N1->name = node1;
-	N2->name =node2;
+	N2->name = node2;
 	N3->name = node3;
 	N4->name = node4;
 	N1->next = N2;

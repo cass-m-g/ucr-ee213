@@ -38,7 +38,7 @@ void Index_All_Nodes()
 	Node_Entry *current; // the head of node is given as global varaiable
 	NodeIndex *headIndex, *cmpIndex, *tailIndex;
 	current = headNode;
-	int index = 0;
+	int index = 1;
 	
 	/*Initial NodeIndex*/
 	headIndex=(NodeIndex *)malloc(sizeof(NodeIndex));
@@ -50,33 +50,39 @@ void Index_All_Nodes()
 	tailIndex=headIndex;
 	while(current != tailNode){
 		int same = 0;
+		
 		cmpIndex=headIndex->next;
 		
 		while(cmpIndex !=NULL){    //scan NodeIndex linked table
-	    if(NameHash(current->next->name,nodenum) == cmpIndex->hash){   //compare hash
-			if(strcmp(current->next->name,cmpIndex->name)==0){	//hash same, use exist index and continue
-				current->next->index = cmpIndex->index;
-				same=1;
+	      if(NameHash(current->next->name,nodenum) == cmpIndex->hash){   //compare hash
+		    if(strcmp(current->next->name,cmpIndex->name)==0){	//hash same, use exist index and continue
+			  current->next->index = cmpIndex->index;
+			  same=1;
 			} 
+		  }
+		  cmpIndex=cmpIndex->next;
+	    }
+		if(same==0){	// if new, assign index and add to NodeIndex link
+		int ret = strcmp(current->next->name,"0");
+		  if(ret==0){   // ground node
+			current->next->index = 0;  
+		  }			    
+		  else{
+		    current->next->index = index;
+		    NodeIndex *new;
+		    new=(NodeIndex *)malloc(sizeof(NodeIndex));
+		    new->name = current->next->name;
+		    new->hash = NameHash(current->next->name,nodenum);
+		    new->index = index;
+		    new->next = NULL;
+		    tailIndex->next=new;
+		    tailIndex=tailIndex->next;
+		    index++;
+		  }
 		}
-		cmpIndex=cmpIndex->next;
+	    current = current->next;
 	}
-		if(same==0){	// if new, assign index and add to NodeIndex link 
-			current->next->index = index;
-			NodeIndex *new;
-			new=(NodeIndex *)malloc(sizeof(NodeIndex));
-			new->name = current->next->name;
-			new->hash = NameHash(current->next->name,nodenum);
-			new->index = index;
-			new->next = NULL;
-			tailIndex->next=new;
-			tailIndex=tailIndex->next;
-
-			index++;
-		}
-	current = current->next;
-	}
-        NodeSize = index;
+    NodeSize = index;
 }
 
 int Get_Matrix_Size()
@@ -204,6 +210,8 @@ void Create_MNA_Matrix()
   for (i = 0; i < nIsrc; i++){
     RHS[current->nodelist->index] += - current->value;
     RHS[current->nodelist->next->index] += current->value;
+	//int ret = strcmp(current->nodelist->name, "0");
+    //printf("Isrc: %d, %d, %d\n", current->nodelist->index, current->nodelist->next->index, ret);
     current = current->next;
   }
   current = headVCCS->next;
@@ -221,14 +229,14 @@ void Print_MNA_System()
 	int i, j;
 
 	printf("\nMNA Matrix:\n");
-	for (j = 1; j < MatrixSize + 1; j++) {
+	for (j = 1; j < MatrixSize; j++) {
 		printf("\t%-24d", j);
 	}
 	printf("\tRHS\n");
 	
-	for (i = 0; i < MatrixSize; i++) {
-		printf("[%-3d]", i+1);
-		for (j = 0; j < MatrixSize; j++) {
+	for (i = 1; i < MatrixSize; i++) {
+		printf("[%-3d]", i);
+		for (j = 1; j < MatrixSize; j++) {
 			printf("\t%-6f+s*%-18f", MNAMatrix[i][j],MNAMatrix_image[i][j]);
 		}
 		printf("\t%-12f\n", RHS[i]);
