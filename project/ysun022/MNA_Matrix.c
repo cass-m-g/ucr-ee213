@@ -221,13 +221,13 @@ void Print_MNA_System()
 	int i, j;
 
 	printf("\nMNA Matrix:\n");
-	for (j = 0; j <= MatrixSize; j++) {
+	for (j = 1; j <= MatrixSize + 1; j++) {
 		printf("\t%-24d", j);
 	}
 	printf("\tRHS\n");
 	
 	for (i = 0; i <= MatrixSize; i++) {
-		printf("[%-3d]", i);
+		printf("[%-3d]", i+1);
 		for (j = 0; j <= MatrixSize; j++) {
 			printf("\t%-6f+s*%-18f", MNAMatrix[i][j],MNAMatrix_image[i][j]);
 		}
