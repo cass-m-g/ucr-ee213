@@ -1,6 +1,0 @@
-The code is tested under Cygwin64.
-Runparse.exe is an executable file. If you need to compile on yourself, type in command line:
-$ make parse
-$ make runparse
-To run the executable file:
-$  ./runparse netlist_t1.sp
