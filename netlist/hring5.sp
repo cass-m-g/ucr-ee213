@@ -1,4 +1,4 @@
-hring5
+hring5 (optional)
 .lib 'SAED90nm.lib' TT_12 
 *.MODEL NCH n12.1 
 *.MODEL PCH p12.1 
