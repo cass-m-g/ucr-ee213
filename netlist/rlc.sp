@@ -1,4 +1,4 @@
-* 100 * 10, 1 RLC sections per segment  
+* 100 * 10, 1 RLC sections per segment
 * rows = 100
 * cols = 10
 * sections = 1
