@@ -1,4 +1,4 @@
-# UCR EE 213 Winter 16
+# UCR EE 213 Fall 16
 
 ---
 
