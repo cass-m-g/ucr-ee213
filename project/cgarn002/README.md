@@ -22,7 +22,7 @@ The programs "parse.lex" and "parse.y" are compiled in CYGWIN by running
 "make".
 
 Then in MATLAB, run the mex compiler as follows:
-	mex -DMATLAB mex_parse.c parse_func.c Symbol_Table.c MNA_Matrix.c
+	mex -O CFLAGS="\$CFLAGS -std=c99" -DMATLAB mex_parse.c parse_func.c Symbol_Table.c MNA_Matrix.c
 
 To run the parser in Linux, compile as follows:
 

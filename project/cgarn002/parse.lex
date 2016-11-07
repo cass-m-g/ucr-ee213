@@ -16,7 +16,6 @@
 #include "parse.tab.h"
 %}
 
-%option nounistd 
 
 ALPHA			[A-Za-z_]
 DIGIT			[0-9]
