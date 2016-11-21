@@ -46,7 +46,11 @@ void ParseRes(char *name, char *node1, char *node2, double value)
 	nRes++;
 
 	// Save the device, nodes, value info to the symbol tables.
-	// Please write your own code here ...
+	numnodes = 2;
+	nodelist = malloc(sizeof(Node_Entry*)*numnodes);
+	nodelist[0] = Insert_Node_Entry(node1);
+	nodelist[1] = Insert_Node_Entry(node2);
+	Insert_Device_Entry(name, numnodes, nodelist, value);
 }
 
 void ParseCap(char *name, char *node1, char *node2, double value)
@@ -59,7 +63,11 @@ void ParseCap(char *name, char *node1, char *node2, double value)
 	nCap++;
 
 	// Save the device, nodes, value info to the symbol tables.
-	// Please write your own code here ...
+	numnodes = 2;
+	nodelist = malloc(sizeof(Node_Entry*)*numnodes);
+	nodelist[0] = Insert_Node_Entry(node1);
+	nodelist[1] = Insert_Node_Entry(node2);
+	Insert_Device_Entry(name, numnodes, nodelist, value);
 }
 
 void ParseCapIC(char *name, char *node1, char *node2, double value, double init)
@@ -69,7 +77,14 @@ void ParseCapIC(char *name, char *node1, char *node2, double value, double init)
 	nCap++;
 
 	// Save the device, nodes, value info to the symbol tables.
-	// Please write your own code here ...
+//****************************FIGURE OUT HOW TO ADD INIT**************************
+	int numnodes;
+	Node_Entry **nodelist;
+	numnodes = 2;
+	nodelist = malloc(sizeof(Node_Entry*)*numnodes);
+	nodelist[0] = Insert_Node_Entry(node1);
+	nodelist[1] = Insert_Node_Entry(node2);
+	Insert_Device_Entry(name, numnodes, nodelist, value);
 }
 
 void ParseInd(char *name, char *node1, char *node2, double value)
@@ -82,7 +97,12 @@ void ParseInd(char *name, char *node1, char *node2, double value)
 	nInd++;
 
 	// Save the device, nodes, value info to the symbol tables.
-	// Please write your own code here ...
+	numnodes = 2;
+	nodelist = malloc(sizeof(Node_Entry*)*numnodes);
+	nodelist[0] = Insert_Node_Entry(node1);
+	nodelist[1] = Insert_Node_Entry(node2);
+	Insert_Device_Entry(name, numnodes, nodelist, value);
+
 }
 
 void ParseIndIC(char *name, char *node1, char *node2, double value, double init)
@@ -92,7 +112,12 @@ void ParseIndIC(char *name, char *node1, char *node2, double value, double init)
 	nInd++;
 
 	// Save the device, nodes, value info to the symbol tables.
-	// Please write your own code here ...
+//****************************FIGURE OUT HOW TO ADD INIT**************************
+	int numnodes = 2;
+	Node_Entry **nodelist = malloc(sizeof(Node_Entry*)*numnodes);
+	nodelist[0] = Insert_Node_Entry(node1);
+	nodelist[1] = Insert_Node_Entry(node2);
+	Insert_Device_Entry(name, numnodes, nodelist, value);
 }
 
 void ParseVsrc(char *name, char *node1, char *node2, double value)
@@ -105,7 +130,11 @@ void ParseVsrc(char *name, char *node1, char *node2, double value)
 	nVsrc++;
 
 	// Save the device, nodes, value info to the symbol tables.
-	// Please write your own code here ...
+	numnodes = 2;
+	nodelist = malloc(sizeof(Node_Entry*)*numnodes);
+	nodelist[0] = Insert_Node_Entry(node1);
+	nodelist[1] = Insert_Node_Entry(node2);
+	Insert_Device_Entry(name, numnodes, nodelist, value);
 }
 
 void ParseIsrc(char *name, char *node1, char *node2, double value)
@@ -118,7 +147,11 @@ void ParseIsrc(char *name, char *node1, char *node2, double value)
 	nIsrc++;
 
 	// Save the device, nodes, value info to the symbol tables.
-	// Please write your own code here ...
+	numnodes = 2;
+	nodelist = malloc(sizeof(Node_Entry*)*numnodes);
+	nodelist[0] = Insert_Node_Entry(node1);
+	nodelist[1] = Insert_Node_Entry(node2);
+	Insert_Device_Entry(name, numnodes, nodelist, value);
 }
 
 void ParseVCCS(char *name, char *node1, char *node2, char *node3, char *node4, double value)
@@ -132,7 +165,13 @@ void ParseVCCS(char *name, char *node1, char *node2, char *node3, char *node4, d
 	nVCCS++;
 
 	// Save the device, nodes, value info to the symbol tables.
-	// Please write your own code here ...
+	numnodes = 4;
+	nodelist = malloc(sizeof(Node_Entry*)*numnodes);
+	nodelist[0] = Insert_Node_Entry(node1);
+	nodelist[1] = Insert_Node_Entry(node2);
+	nodelist[2] = Insert_Node_Entry(node3);
+	nodelist[3] = Insert_Node_Entry(node4);
+	Insert_Device_Entry(name, numnodes, nodelist, value);
 }
 
 

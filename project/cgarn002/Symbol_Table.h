@@ -18,28 +18,30 @@
 */
 struct node_s 
 {
-	char *name;	// node name to be allocated
+	const char *name;	// node name to be allocated
 	int index;	// node index for accessing matrix row/column
 	void *node; 	// points to a Node instance in the future
+	struct node_s *prev;
 	struct node_s *next;
 };
 typedef struct node_s Node_Entry;
 
 struct device_s {
-	char *name;
+	const char *name;
 	int numnodes;	// length of the node list
 	Node_Entry **nodelist;
 	double value;
 	void *device;	// points to a device instance in the future
+	struct device_s *prev;
 	struct device_s *next;
 };
 typedef struct device_s Device_Entry;
 
 
-extern Node_Entry **NodeTable;
+extern Node_Entry *NodeTableHead;
 extern int NodeTableSize;
 
-extern Device_Entry **DeviceTable;
+extern Device_Entry *DeviceTableHead;
 extern int DeviceTableSize;
 
 
