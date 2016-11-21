@@ -26,11 +26,22 @@ struct node_s
 };
 typedef struct node_s Node_Entry;
 
+typedef enum{
+	RESISTOR,
+	INDUCTOR,
+	CAPACITOR,
+	VS,
+	CS,
+	VCCS,
+	NO_TYPE
+	}device_type;
+
 struct device_s {
 	const char *name;
 	int numnodes;	// length of the node list
 	Node_Entry **nodelist;
 	double value;
+	device_type type;
 	void *device;	// points to a device instance in the future
 	struct device_s *prev;
 	struct device_s *next;
@@ -57,11 +68,12 @@ void Print_Node_Table();
 
 Device_Entry*   	Lookup_Device_Entry(const char *name);
 Device_Entry*   	Insert_Device_Entry(const char *name,  const int numnodes, 
-				Node_Entry **nodelist, const double value);
+				Node_Entry **nodelist, const double value, device_type type);
 
 void Delete_Device_Entry(const char *name);
 void Delete_Device_Table();
 void Print_Device_Table();
+const char* Print_Device_Type(device_type type);
 
 int NameHash(const char *name, int tsize);
 

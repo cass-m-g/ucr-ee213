@@ -144,7 +144,7 @@ Node_Entry* Insert_Node_Entry(const char *name)
 
 
 Device_Entry* Insert_Device_Entry(const char *name,  const int numnodes, 
-				Node_Entry **nodelist, const double value)
+				Node_Entry **nodelist, const double value, device_type type)
 {
 	Device_Entry *ret;
 	if(ret = Lookup_Device_Entry(name)){
@@ -156,6 +156,7 @@ Device_Entry* Insert_Device_Entry(const char *name,  const int numnodes,
 	ret->numnodes = numnodes;
 	ret->nodelist = nodelist;
 	ret->value = value;
+	ret->type = type;
 	ret->next = DeviceTableHead;
 	if(DeviceTableHead) DeviceTableHead->prev = ret;
 	DeviceTableHead = ret;
@@ -186,9 +187,21 @@ void Print_Device_Table()
 		for(i = 0; i < num; i++){
 			printf("node%d=%s, ", i, n->nodelist[i]->name);
 		}
-		printf("value=%f\n", n->value);
+		printf("value=%f, type=%s\n", n->value, Print_Device_Type(n->type));
 	}
 	printf("\n");
+}
+
+const char* Print_Device_Type(device_type type){
+	switch(type){
+		case RESISTOR: return "resistor";
+		case INDUCTOR: return "inductor";
+		case CAPACITOR: return "capacitor";
+		case VS: return "voltage_source";
+		case CS: return "current_source";
+		case VCCS: return "VCCS";
+		case NO_TYPE: return "none";
+	}
 }
 
 

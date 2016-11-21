@@ -34,8 +34,11 @@ double *RHS = NULL;
 */
 void Index_All_Nodes()
 {
-	MatrixSize = 3;
-	
+	MatrixSize = NodeTableSize - 1;
+	Node_Entry *n;
+	for(n = NodeTableHead; n; n = n->next){
+		n->index = NameHash(n->name, NodeTableSize);
+	}
 }
 
 int Get_Matrix_Size()
@@ -87,9 +90,9 @@ void Init_MNA_System()
 	// Initialize to zero
 	for (i = 0; i <= MatrixSize; i++) {
 		for (j = 0; j <= MatrixSize; j++) {
-			MNAMatrix[i][j] = 10.0;
+			MNAMatrix[i][j] = 0.0;
 		}
-		RHS[i] = 20.0;
+		RHS[i] = 0.0;
 	}
 #endif
 }
@@ -104,6 +107,18 @@ void Init_MNA_System()
 */
 void Create_MNA_Matrix()
 {
+	Device_Entry *dev;
+	for(dev = DeviceTableHead; dev; dev = dev->next){
+		switch(dev->type){
+			case RESISTOR:
+			case INDUCTOR:
+			case CAPACITOR:
+			case VS:
+			case CS:
+			case VCCS:
+			case NO_TYPE:			
+		}
+	}
 }
 
 void Print_MNA_System()

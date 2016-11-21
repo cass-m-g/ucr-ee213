@@ -50,7 +50,7 @@ void ParseRes(char *name, char *node1, char *node2, double value)
 	nodelist = malloc(sizeof(Node_Entry*)*numnodes);
 	nodelist[0] = Insert_Node_Entry(node1);
 	nodelist[1] = Insert_Node_Entry(node2);
-	Insert_Device_Entry(name, numnodes, nodelist, value);
+	Insert_Device_Entry(name, numnodes, nodelist, value, RESISTOR);
 }
 
 void ParseCap(char *name, char *node1, char *node2, double value)
@@ -67,7 +67,7 @@ void ParseCap(char *name, char *node1, char *node2, double value)
 	nodelist = malloc(sizeof(Node_Entry*)*numnodes);
 	nodelist[0] = Insert_Node_Entry(node1);
 	nodelist[1] = Insert_Node_Entry(node2);
-	Insert_Device_Entry(name, numnodes, nodelist, value);
+	Insert_Device_Entry(name, numnodes, nodelist, value, CAPACITOR);
 }
 
 void ParseCapIC(char *name, char *node1, char *node2, double value, double init)
@@ -84,7 +84,7 @@ void ParseCapIC(char *name, char *node1, char *node2, double value, double init)
 	nodelist = malloc(sizeof(Node_Entry*)*numnodes);
 	nodelist[0] = Insert_Node_Entry(node1);
 	nodelist[1] = Insert_Node_Entry(node2);
-	Insert_Device_Entry(name, numnodes, nodelist, value);
+	Insert_Device_Entry(name, numnodes, nodelist, value, CAPACITOR);
 }
 
 void ParseInd(char *name, char *node1, char *node2, double value)
@@ -101,7 +101,7 @@ void ParseInd(char *name, char *node1, char *node2, double value)
 	nodelist = malloc(sizeof(Node_Entry*)*numnodes);
 	nodelist[0] = Insert_Node_Entry(node1);
 	nodelist[1] = Insert_Node_Entry(node2);
-	Insert_Device_Entry(name, numnodes, nodelist, value);
+	Insert_Device_Entry(name, numnodes, nodelist, value, INDUCTOR);
 
 }
 
@@ -117,7 +117,7 @@ void ParseIndIC(char *name, char *node1, char *node2, double value, double init)
 	Node_Entry **nodelist = malloc(sizeof(Node_Entry*)*numnodes);
 	nodelist[0] = Insert_Node_Entry(node1);
 	nodelist[1] = Insert_Node_Entry(node2);
-	Insert_Device_Entry(name, numnodes, nodelist, value);
+	Insert_Device_Entry(name, numnodes, nodelist, value, INDUCTOR);
 }
 
 void ParseVsrc(char *name, char *node1, char *node2, double value)
@@ -134,7 +134,7 @@ void ParseVsrc(char *name, char *node1, char *node2, double value)
 	nodelist = malloc(sizeof(Node_Entry*)*numnodes);
 	nodelist[0] = Insert_Node_Entry(node1);
 	nodelist[1] = Insert_Node_Entry(node2);
-	Insert_Device_Entry(name, numnodes, nodelist, value);
+	Insert_Device_Entry(name, numnodes, nodelist, value, VS);
 }
 
 void ParseIsrc(char *name, char *node1, char *node2, double value)
@@ -151,7 +151,7 @@ void ParseIsrc(char *name, char *node1, char *node2, double value)
 	nodelist = malloc(sizeof(Node_Entry*)*numnodes);
 	nodelist[0] = Insert_Node_Entry(node1);
 	nodelist[1] = Insert_Node_Entry(node2);
-	Insert_Device_Entry(name, numnodes, nodelist, value);
+	Insert_Device_Entry(name, numnodes, nodelist, value, CS);
 }
 
 void ParseVCCS(char *name, char *node1, char *node2, char *node3, char *node4, double value)
@@ -171,7 +171,7 @@ void ParseVCCS(char *name, char *node1, char *node2, char *node3, char *node4, d
 	nodelist[1] = Insert_Node_Entry(node2);
 	nodelist[2] = Insert_Node_Entry(node3);
 	nodelist[3] = Insert_Node_Entry(node4);
-	Insert_Device_Entry(name, numnodes, nodelist, value);
+	Insert_Device_Entry(name, numnodes, nodelist, value, VCCS);
 }
 
 
