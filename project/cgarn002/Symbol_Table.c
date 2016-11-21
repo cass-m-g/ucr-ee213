@@ -136,7 +136,7 @@ Node_Entry* Insert_Node_Entry(const char *name)
 	ret = malloc(sizeof(Node_Entry));
 	ret->name = name;
 	ret->next = NodeTableHead;
-	NodeTableHead->prev = ret;
+	if(NodeTableHead) NodeTableHead->prev = ret;
 	NodeTableHead = ret;
 	++NodeTableSize;
 	return ret;
@@ -153,8 +153,11 @@ Device_Entry* Insert_Device_Entry(const char *name,  const int numnodes,
 
 	ret = malloc(sizeof(Device_Entry));
 	ret->name = name;
+	ret->numnodes = numnodes;
+	ret->nodelist = nodelist;
+	ret->value = value;
 	ret->next = DeviceTableHead;
-	DeviceTableHead->prev = ret;
+	if(DeviceTableHead) DeviceTableHead->prev = ret;
 	DeviceTableHead = ret;
 	++DeviceTableSize;
 	return ret;
@@ -183,7 +186,7 @@ void Print_Device_Table()
 		for(i = 0; i < num; i++){
 			printf("node%d=%s, ", i, n->nodelist[i]->name);
 		}
-		printf("\n");
+		printf("value=%f\n", n->value);
 	}
 	printf("\n");
 }
