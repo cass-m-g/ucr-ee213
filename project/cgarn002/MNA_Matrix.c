@@ -19,6 +19,7 @@
 #include <string.h>
 #include "Symbol_Table.h"
 #include "MNA_Matrix.h"
+#include "parse_func.h"
 
 #define WARNING_DIV_BY_ZERO \
 		printf("\nWarning: divide by zero.");
@@ -26,6 +27,7 @@
 int MatrixSize = 0;	// size of the MNA matrix (i.e., the max dimension)
 double **MNAMatrix = NULL;
 double *RHS = NULL;
+int eqnIndex = 0; //index of extra equations
 
 /**
 	Assign indexes to all nodes in the node table.
@@ -34,7 +36,8 @@ double *RHS = NULL;
 */
 void Index_All_Nodes()
 {
-	MatrixSize = NodeTableSize - 1;
+	eqnIndex = NodeTableSize;
+	MatrixSize = NodeTableSize - 1 + nVsrc;
 	Node_Entry *n;
 	for(n = NodeTableHead; n; n = n->next){
 		n->index = NameHash(n->name, NodeTableSize);
@@ -109,14 +112,53 @@ void Create_MNA_Matrix()
 {
 	Device_Entry *dev;
 	for(dev = DeviceTableHead; dev; dev = dev->next){
+		int indxp, indxm, indxcp, indxcm;
+		if(dev->numnodes >= 2){
+			indxp = dev->nodelist[0]->index;
+			indxm = dev->nodelist[1]->index;
+		}
+		double val = dev->value;
 		switch(dev->type){
 			case RESISTOR:
+				MNAMatrix[indxp][indxp] += 1.0/val;
+				MNAMatrix[indxp][indxm] += -1.0/val;
+				MNAMatrix[indxm][indxp] += -1.0/val;
+				MNAMatrix[indxm][indxm] += 1.0/val;
+				break;
 			case INDUCTOR:
+				break;
 			case CAPACITOR:
+				break;
 			case VS:
+				MNAMatrix[eqnIndex][indxp] += 1;
+				MNAMatrix[eqnIndex][indxm] += -1;
+				MNAMatrix[indxp][eqnIndex] += 1;
+				MNAMatrix[indxm][eqnIndex] += -1;
+				RHS[eqnIndex] += val;
+				++eqnIndex;				
+				break;
 			case CS:
+				RHS[indxp] += -val;
+				RHS[indxm] += val;	
+				break;
 			case VCCS:
+				if(dev->numnodes >= 4){
+					indxcp = dev->nodelist[2]->index;
+					indxcm = dev->nodelist[3]->index;
+				}
+				else{
+					printf("ERROR\n");
+					return;
+				}
+				MNAMatrix[indxp][indxcp] += val;
+				MNAMatrix[indxp][indxcm] += -val;
+				MNAMatrix[indxm][indxcp] += -val;
+				MNAMatrix[indxm][indxcm] += val;
+
+				break;
 			case NO_TYPE:			
+				printf("MUST BE AN ERROR\n");
+				break;
 		}
 	}
 }
