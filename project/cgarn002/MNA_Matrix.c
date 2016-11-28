@@ -37,7 +37,7 @@ int eqnIndex = 0; //index of extra equations
 void Index_All_Nodes()
 {
 	eqnIndex = NodeTableSize;
-	MatrixSize = NodeTableSize - 1 + nVsrc;
+	MatrixSize = NodeTableSize - 1 + nVsrc + nInd;
 	Node_Entry *n;
 	for(n = NodeTableHead; n; n = n->next){
 		n->index = NameHash(n->name, NodeTableSize);
@@ -126,8 +126,19 @@ void Create_MNA_Matrix()
 				MNAMatrix[indxm][indxm] += 1.0/val;
 				break;
 			case INDUCTOR:
+				MNAMatrix[eqnIndex][indxp] += 1;
+				MNAMatrix[eqnIndex][indxm] += -1;
+				MNAMatrix[eqnIndex][eqnIndex] += -val;
+				MNAMatrix[indxp][eqnIndex] += 1;
+				MNAMatrix[indxm][eqnIndex] += -1;
+				++eqnIndex;				
 				break;
 			case CAPACITOR:
+				MNAMatrix[indxp][indxp] += val;
+				MNAMatrix[indxp][indxm] += -val;
+				MNAMatrix[indxm][indxp] += -val;
+				MNAMatrix[indxm][indxm] += val;
+
 				break;
 			case VS:
 				MNAMatrix[eqnIndex][indxp] += 1;
