@@ -28,6 +28,7 @@ int   Get_Matrix_Size();
 void Get_MNA_System(double **A, double **b);
 void Index_All_Nodes();
 void Init_MNA_System();
+void solve_MNA();
 void Print_MNA_System();
 
 

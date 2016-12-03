@@ -47,10 +47,10 @@ void ParseRes(char *name, char *node1, char *node2, double value)
 
 	// Save the device, nodes, value info to the symbol tables.
 	numnodes = 2;
-	nodelist = malloc(sizeof(Node_Entry*)*numnodes);
+	nodelist = (Node_Entry**)malloc(sizeof(Node_Entry*)*numnodes);
 	nodelist[0] = Insert_Node_Entry(node1);
 	nodelist[1] = Insert_Node_Entry(node2);
-	Insert_Device_Entry(name, numnodes, nodelist, value, RESISTOR);
+	Insert_Device_Entry(name, numnodes, nodelist, value, DEV_RESISTOR);
 }
 
 void ParseCap(char *name, char *node1, char *node2, double value)
@@ -64,10 +64,10 @@ void ParseCap(char *name, char *node1, char *node2, double value)
 
 	// Save the device, nodes, value info to the symbol tables.
 	numnodes = 2;
-	nodelist = malloc(sizeof(Node_Entry*)*numnodes);
+	nodelist = (Node_Entry**)malloc(sizeof(Node_Entry*)*numnodes);
 	nodelist[0] = Insert_Node_Entry(node1);
 	nodelist[1] = Insert_Node_Entry(node2);
-	Insert_Device_Entry(name, numnodes, nodelist, value, CAPACITOR);
+	Insert_Device_Entry(name, numnodes, nodelist, value, DEV_CAPACITOR);
 }
 
 void ParseCapIC(char *name, char *node1, char *node2, double value, double init)
@@ -81,10 +81,10 @@ void ParseCapIC(char *name, char *node1, char *node2, double value, double init)
 	int numnodes;
 	Node_Entry **nodelist;
 	numnodes = 2;
-	nodelist = malloc(sizeof(Node_Entry*)*numnodes);
+	nodelist = (Node_Entry**)malloc(sizeof(Node_Entry*)*numnodes);
 	nodelist[0] = Insert_Node_Entry(node1);
 	nodelist[1] = Insert_Node_Entry(node2);
-	Insert_Device_Entry(name, numnodes, nodelist, value, CAPACITOR);
+	Insert_Device_Entry(name, numnodes, nodelist, value, DEV_CAPACITOR);
 }
 
 void ParseInd(char *name, char *node1, char *node2, double value)
@@ -98,10 +98,10 @@ void ParseInd(char *name, char *node1, char *node2, double value)
 
 	// Save the device, nodes, value info to the symbol tables.
 	numnodes = 2;
-	nodelist = malloc(sizeof(Node_Entry*)*numnodes);
+	nodelist = (Node_Entry**)malloc(sizeof(Node_Entry*)*numnodes);
 	nodelist[0] = Insert_Node_Entry(node1);
 	nodelist[1] = Insert_Node_Entry(node2);
-	Insert_Device_Entry(name, numnodes, nodelist, value, INDUCTOR);
+	Insert_Device_Entry(name, numnodes, nodelist, value, DEV_INDUCTOR);
 
 }
 
@@ -114,10 +114,10 @@ void ParseIndIC(char *name, char *node1, char *node2, double value, double init)
 	// Save the device, nodes, value info to the symbol tables.
 //****************************FIGURE OUT HOW TO ADD INIT**************************
 	int numnodes = 2;
-	Node_Entry **nodelist = malloc(sizeof(Node_Entry*)*numnodes);
+	Node_Entry **nodelist = (Node_Entry**)malloc(sizeof(Node_Entry*)*numnodes);
 	nodelist[0] = Insert_Node_Entry(node1);
 	nodelist[1] = Insert_Node_Entry(node2);
-	Insert_Device_Entry(name, numnodes, nodelist, value, INDUCTOR);
+	Insert_Device_Entry(name, numnodes, nodelist, value, DEV_INDUCTOR);
 }
 
 void ParseVsrc(char *name, char *node1, char *node2, double value)
@@ -131,10 +131,10 @@ void ParseVsrc(char *name, char *node1, char *node2, double value)
 
 	// Save the device, nodes, value info to the symbol tables.
 	numnodes = 2;
-	nodelist = malloc(sizeof(Node_Entry*)*numnodes);
+	nodelist = (Node_Entry**)malloc(sizeof(Node_Entry*)*numnodes);
 	nodelist[0] = Insert_Node_Entry(node1);
 	nodelist[1] = Insert_Node_Entry(node2);
-	Insert_Device_Entry(name, numnodes, nodelist, value, VS);
+	Insert_Device_Entry(name, numnodes, nodelist, value, DEV_VS);
 }
 
 void ParseIsrc(char *name, char *node1, char *node2, double value)
@@ -148,10 +148,10 @@ void ParseIsrc(char *name, char *node1, char *node2, double value)
 
 	// Save the device, nodes, value info to the symbol tables.
 	numnodes = 2;
-	nodelist = malloc(sizeof(Node_Entry*)*numnodes);
+	nodelist = (Node_Entry**)malloc(sizeof(Node_Entry*)*numnodes);
 	nodelist[0] = Insert_Node_Entry(node1);
 	nodelist[1] = Insert_Node_Entry(node2);
-	Insert_Device_Entry(name, numnodes, nodelist, value, CS);
+	Insert_Device_Entry(name, numnodes, nodelist, value, DEV_CS);
 }
 
 void ParseVCCS(char *name, char *node1, char *node2, char *node3, char *node4, double value)
@@ -166,12 +166,12 @@ void ParseVCCS(char *name, char *node1, char *node2, char *node3, char *node4, d
 
 	// Save the device, nodes, value info to the symbol tables.
 	numnodes = 4;
-	nodelist = malloc(sizeof(Node_Entry*)*numnodes);
+	nodelist = (Node_Entry**)malloc(sizeof(Node_Entry*)*numnodes);
 	nodelist[0] = Insert_Node_Entry(node1);
 	nodelist[1] = Insert_Node_Entry(node2);
 	nodelist[2] = Insert_Node_Entry(node3);
 	nodelist[3] = Insert_Node_Entry(node4);
-	Insert_Device_Entry(name, numnodes, nodelist, value, VCCS);
+	Insert_Device_Entry(name, numnodes, nodelist, value, DEV_VCCS);
 }
 
 

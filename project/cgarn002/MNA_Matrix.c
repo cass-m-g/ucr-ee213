@@ -20,6 +20,7 @@
 #include "Symbol_Table.h"
 #include "MNA_Matrix.h"
 #include "parse_func.h"
+#include <Eigen/Dense>
 
 #define WARNING_DIV_BY_ZERO \
 		printf("\nWarning: divide by zero.");
@@ -119,13 +120,13 @@ void Create_MNA_Matrix()
 		}
 		double val = dev->value;
 		switch(dev->type){
-			case RESISTOR:
+			case DEV_RESISTOR:
 				MNAMatrix[indxp][indxp] += 1.0/val;
 				MNAMatrix[indxp][indxm] += -1.0/val;
 				MNAMatrix[indxm][indxp] += -1.0/val;
 				MNAMatrix[indxm][indxm] += 1.0/val;
 				break;
-			case INDUCTOR:
+			case DEV_INDUCTOR:
 				MNAMatrix[eqnIndex][indxp] += 1;
 				MNAMatrix[eqnIndex][indxm] += -1;
 				MNAMatrix[eqnIndex][eqnIndex] += -val;
@@ -133,14 +134,14 @@ void Create_MNA_Matrix()
 				MNAMatrix[indxm][eqnIndex] += -1;
 				++eqnIndex;				
 				break;
-			case CAPACITOR:
+			case DEV_CAPACITOR:
 				MNAMatrix[indxp][indxp] += val;
 				MNAMatrix[indxp][indxm] += -val;
 				MNAMatrix[indxm][indxp] += -val;
 				MNAMatrix[indxm][indxm] += val;
 
 				break;
-			case VS:
+			case DEV_VS:
 				MNAMatrix[eqnIndex][indxp] += 1;
 				MNAMatrix[eqnIndex][indxm] += -1;
 				MNAMatrix[indxp][eqnIndex] += 1;
@@ -148,11 +149,11 @@ void Create_MNA_Matrix()
 				RHS[eqnIndex] += val;
 				++eqnIndex;				
 				break;
-			case CS:
+			case DEV_CS:
 				RHS[indxp] += -val;
 				RHS[indxm] += val;	
 				break;
-			case VCCS:
+			case DEV_VCCS:
 				if(dev->numnodes >= 4){
 					indxcp = dev->nodelist[2]->index;
 					indxcm = dev->nodelist[3]->index;
@@ -167,11 +168,15 @@ void Create_MNA_Matrix()
 				MNAMatrix[indxm][indxcm] += val;
 
 				break;
-			case NO_TYPE:			
+			case DEV_NO_TYPE:			
 				printf("MUST BE AN ERROR\n");
 				break;
 		}
 	}
+}
+
+void solve_MNA(){
+
 }
 
 void Print_MNA_System()

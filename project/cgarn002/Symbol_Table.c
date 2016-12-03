@@ -133,7 +133,7 @@ Node_Entry* Insert_Node_Entry(const char *name)
 		return ret;
 	}
 
-	ret = malloc(sizeof(Node_Entry));
+	ret = (Node_Entry*)malloc(sizeof(Node_Entry));
 	ret->name = name;
 	ret->next = NodeTableHead;
 	if(NodeTableHead) NodeTableHead->prev = ret;
@@ -151,7 +151,7 @@ Device_Entry* Insert_Device_Entry(const char *name,  const int numnodes,
 		return ret;
 	}
 
-	ret = malloc(sizeof(Device_Entry));
+	ret = (Device_Entry*)malloc(sizeof(Device_Entry));
 	ret->name = name;
 	ret->numnodes = numnodes;
 	ret->nodelist = nodelist;
@@ -194,13 +194,13 @@ void Print_Device_Table()
 
 const char* Print_Device_Type(device_type type){
 	switch(type){
-		case RESISTOR: return "resistor";
-		case INDUCTOR: return "inductor";
-		case CAPACITOR: return "capacitor";
-		case VS: return "voltage_source";
-		case CS: return "current_source";
-		case VCCS: return "VCCS";
-		case NO_TYPE: return "none";
+		case DEV_RESISTOR: return "resistor";
+		case DEV_INDUCTOR: return "inductor";
+		case DEV_CAPACITOR: return "capacitor";
+		case DEV_VS: return "voltage_source";
+		case DEV_CS: return "current_source";
+		case DEV_VCCS: return "VCCS";
+		case DEV_NO_TYPE: return "none";
 	}
 }
 

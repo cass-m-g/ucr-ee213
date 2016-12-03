@@ -27,13 +27,13 @@ struct node_s
 typedef struct node_s Node_Entry;
 
 typedef enum{
-	RESISTOR,
-	INDUCTOR,
-	CAPACITOR,
-	VS,
-	CS,
-	VCCS,
-	NO_TYPE
+	DEV_RESISTOR,
+	DEV_INDUCTOR,
+	DEV_CAPACITOR,
+	DEV_VS,
+	DEV_CS,
+	DEV_VCCS,
+	DEV_NO_TYPE
 	}device_type;
 
 struct device_s {
