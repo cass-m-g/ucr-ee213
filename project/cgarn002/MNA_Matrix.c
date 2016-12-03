@@ -20,14 +20,14 @@
 #include "Symbol_Table.h"
 #include "MNA_Matrix.h"
 #include "parse_func.h"
-#include <Eigen/Dense>
+#include "Eigen/Dense"
 
 #define WARNING_DIV_BY_ZERO \
 		printf("\nWarning: divide by zero.");
 
 int MatrixSize = 0;	// size of the MNA matrix (i.e., the max dimension)
-double **MNAMatrix = NULL;
-double *RHS = NULL;
+Eigen::MatrixXd MNAMatrix;
+Eigen::VectorXd RHS;
 int eqnIndex = 0; //index of extra equations
 
 /**
@@ -59,9 +59,9 @@ void Get_MNA_System(double **A, double **b)
 
 	for (j = 0; j <= MatrixSize; j++) {
 		for (i = 0; i <= MatrixSize; i++) {
-			(*A)[i+j*(MatrixSize+1)] = MNAMatrix[i][j];  // convert to column-major format
+			(*A)[i+j*(MatrixSize+1)] = MNAMatrix(i,j);  // convert to column-major format
 		}
-		(*b)[j] = RHS[j];
+		(*b)[j] = RHS(j);
 	}
 }
 
@@ -84,20 +84,8 @@ void Init_MNA_System()
 		return;
 	}
 
-	MNAMatrix = (double**) malloc( (MatrixSize+1) * sizeof(double*) );
-	for (i = 0; i <= MatrixSize; i++) {
-		MNAMatrix[i] = (double*) malloc( (MatrixSize+1) * sizeof(double) );
-	}
-
-	RHS = (double*) malloc( (MatrixSize+1) * sizeof(double) );
-
-	// Initialize to zero
-	for (i = 0; i <= MatrixSize; i++) {
-		for (j = 0; j <= MatrixSize; j++) {
-			MNAMatrix[i][j] = 0.0;
-		}
-		RHS[i] = 0.0;
-	}
+	MNAMatrix.resize(MatrixSize+1,MatrixSize+1);
+	RHS.resize(MatrixSize+1);
 #endif
 }
 
@@ -121,37 +109,37 @@ void Create_MNA_Matrix()
 		double val = dev->value;
 		switch(dev->type){
 			case DEV_RESISTOR:
-				MNAMatrix[indxp][indxp] += 1.0/val;
-				MNAMatrix[indxp][indxm] += -1.0/val;
-				MNAMatrix[indxm][indxp] += -1.0/val;
-				MNAMatrix[indxm][indxm] += 1.0/val;
+				MNAMatrix(indxp,indxp) += 1.0/val;
+				MNAMatrix(indxp,indxm) += -1.0/val;
+				MNAMatrix(indxm,indxp) += -1.0/val;
+				MNAMatrix(indxm,indxm) += 1.0/val;
 				break;
 			case DEV_INDUCTOR:
-				MNAMatrix[eqnIndex][indxp] += 1;
-				MNAMatrix[eqnIndex][indxm] += -1;
-				MNAMatrix[eqnIndex][eqnIndex] += -val;
-				MNAMatrix[indxp][eqnIndex] += 1;
-				MNAMatrix[indxm][eqnIndex] += -1;
+				MNAMatrix(eqnIndex,indxp) += 1;
+				MNAMatrix(eqnIndex,indxm) += -1;
+				MNAMatrix(eqnIndex,eqnIndex) += -val;
+				MNAMatrix(indxp,eqnIndex) += 1;
+				MNAMatrix(indxm,eqnIndex) += -1;
 				++eqnIndex;				
 				break;
 			case DEV_CAPACITOR:
-				MNAMatrix[indxp][indxp] += val;
-				MNAMatrix[indxp][indxm] += -val;
-				MNAMatrix[indxm][indxp] += -val;
-				MNAMatrix[indxm][indxm] += val;
+				MNAMatrix(indxp,indxp) += val;
+				MNAMatrix(indxp,indxm) += -val;
+				MNAMatrix(indxm,indxp) += -val;
+				MNAMatrix(indxm,indxm) += val;
 
 				break;
 			case DEV_VS:
-				MNAMatrix[eqnIndex][indxp] += 1;
-				MNAMatrix[eqnIndex][indxm] += -1;
-				MNAMatrix[indxp][eqnIndex] += 1;
-				MNAMatrix[indxm][eqnIndex] += -1;
-				RHS[eqnIndex] += val;
+				MNAMatrix(eqnIndex,indxp) += 1;
+				MNAMatrix(eqnIndex,indxm) += -1;
+				MNAMatrix(indxp,eqnIndex) += 1;
+				MNAMatrix(indxm,eqnIndex) += -1;
+				RHS(eqnIndex) += val;
 				++eqnIndex;				
 				break;
 			case DEV_CS:
-				RHS[indxp] += -val;
-				RHS[indxm] += val;	
+				RHS(indxp) += -val;
+				RHS(indxm) += val;	
 				break;
 			case DEV_VCCS:
 				if(dev->numnodes >= 4){
@@ -162,10 +150,10 @@ void Create_MNA_Matrix()
 					printf("ERROR\n");
 					return;
 				}
-				MNAMatrix[indxp][indxcp] += val;
-				MNAMatrix[indxp][indxcm] += -val;
-				MNAMatrix[indxm][indxcp] += -val;
-				MNAMatrix[indxm][indxcm] += val;
+				MNAMatrix(indxp,indxcp) += val;
+				MNAMatrix(indxp,indxcm) += -val;
+				MNAMatrix(indxm,indxcp) += -val;
+				MNAMatrix(indxm,indxcm) += val;
 
 				break;
 			case DEV_NO_TYPE:			
@@ -182,7 +170,7 @@ void solve_MNA(){
 void Print_MNA_System()
 {
 	int i, j;
-
+	
 	printf("\n\n");
 	for (j = 0; j <= MatrixSize; j++) {
 		printf("\t%-12d", j);
@@ -192,9 +180,9 @@ void Print_MNA_System()
 	for (i = 0; i <= MatrixSize; i++) {
 		printf("\n[%-3d]", i);
 		for (j = 0; j <= MatrixSize; j++) {
-			printf("\t%-12f", MNAMatrix[i][j]);
+			printf("\t%-12f", MNAMatrix(i,j));
 		}
-		printf("\t%-12f", RHS[i]);
+		printf("\t%-12f", RHS(i));
 	}
 }
 

@@ -18,9 +18,10 @@
 #include "mex.h"
 #endif
 
+#include "Eigen/Dense"
 extern int MatrixSize;	// size of the MNA matrix (i.e., the max dimension)
-extern double **MNAMatrix;
-extern double *RHS;
+extern Eigen::MatrixXd MNAMatrix;
+extern Eigen::VectorXd RHS;
 
 
 void Create_MNA_Matrix();
