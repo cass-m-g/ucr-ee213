@@ -148,11 +148,13 @@ void ParseVsrc(char *name, char *node1, char *node2, char *pwl)
 	nVsrc++;
 
 	// Save the device, nodes, value info to the symbol tables.
-	/*numnodes = 2;
+	numnodes = 2;
 	nodelist = (Node_Entry**)malloc(sizeof(Node_Entry*)*numnodes);
 	nodelist[0] = Insert_Node_Entry(node1);
 	nodelist[1] = Insert_Node_Entry(node2);
-	Insert_Device_Entry(name, numnodes, nodelist, value, DEV_VS);*/
+	Device_Entry* dev = Insert_Device_Entry(name, numnodes, nodelist, DEV_VS);
+	ParsePWL(pwl, dev);
+
 }
 
 void ParseIsrc(char *name, char *node1, char *node2, double value)
@@ -178,7 +180,7 @@ void ParseIsrc(char *name, char *node1, char *node2, char *pwl)
 	Node_Entry **nodelist;
 	
 	printf("[Current source parsed ...]\n");
-	//printf("   name=%s, node+=%s, node-=%s, I=%s\n", name, node1, node2, pwl);
+	printf("   name=%s, node+=%s, node-=%s, I=%s\n", name, node1, node2, pwl);
 	nIsrc++;
 
 	// Save the device, nodes, value info to the symbol tables.
@@ -232,7 +234,6 @@ void ParsePWL(char *pwl, Device_Entry* dev)
 	for(int i = 0;i < size; i++){
 		dev->pwl[0][i] = tmp.at(2*i);
 		dev->pwl[1][i] = tmp.at(2*i + 1);
-		std::cout << dev->pwl[0][i] << ' ' << dev->pwl[1][i] << std::endl;
 	}
 }
 
