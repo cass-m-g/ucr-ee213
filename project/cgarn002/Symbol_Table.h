@@ -49,7 +49,7 @@ struct device_s {
 	struct device_s *prev;
 	struct device_s *next;
 
-	std::vector<std::pair<double, double> > pwl;
+	double *pwl[2];
 };
 typedef struct device_s Device_Entry;
 

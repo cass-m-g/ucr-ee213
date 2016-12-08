@@ -17,6 +17,7 @@ Author(s):
 #include <stdlib.h>
 #include <utility>
 #include <vector>
+#include "Symbol_Table.h"
 
 // Global variables defined for the parser utility functions
 extern int nRes;
@@ -37,7 +38,7 @@ extern void ParseVsrc(char *str, char *node1, char *node2, char *pwl);
 extern void ParseIsrc(char *str, char *node1, char *node2, double value);
 extern void ParseIsrc(char *str, char *node1, char *node2, char *pwl);
 extern void ParseVCCS(char *str, char *node1, char *node2, char *node3, char *node4, double value);
-void ParsePWL(char *pwl,std::vector<std::pair<double, double> > &ret);
+void ParsePWL(char *pwl,Device_Entry* dev);
 extern void Summarize();
 
 #endif

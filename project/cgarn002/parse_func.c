@@ -187,7 +187,7 @@ void ParseIsrc(char *name, char *node1, char *node2, char *pwl)
 	nodelist[0] = Insert_Node_Entry(node1);
 	nodelist[1] = Insert_Node_Entry(node2);
 	Device_Entry* dev = Insert_Device_Entry(name, numnodes, nodelist, DEV_CS);
-	ParsePWL(pwl, dev->pwl);
+	ParsePWL(pwl, dev);
 }
 
 void ParseVCCS(char *name, char *node1, char *node2, char *node3, char *node4, double value)
@@ -210,7 +210,7 @@ void ParseVCCS(char *name, char *node1, char *node2, char *node3, char *node4, d
 	Insert_Device_Entry(name, numnodes, nodelist, value, DEV_VCCS);
 }
 
-void ParsePWL(char *pwl, std::vector<std::pair<double, double> > &ret)
+void ParsePWL(char *pwl, Device_Entry* dev)
 {
 	std::vector<double> tmp;
 	pwl[strlen(pwl)-2] = '\0';
@@ -224,11 +224,15 @@ void ParsePWL(char *pwl, std::vector<std::pair<double, double> > &ret)
 			num = "";
 		}
 	}
-	for(int i = 0; i < tmp.size() -1; i+=2){
-		ret.push_back(std::make_pair(tmp.at(i), tmp.at(i+1)));
-	}
-	for(int i = 0; i < ret.size(); i++){
-		std::cout << ret.at(i).first << ' ' << ret.at(i).second << std::endl;
+
+	// add info to pwl in dev
+	int size = tmp.size()/2;
+	dev->pwl[0] = (double*)malloc(sizeof(double)*size);
+	dev->pwl[1] = (double*)malloc(sizeof(double)*size);
+	for(int i = 0;i < size; i++){
+		dev->pwl[0][i] = tmp.at(2*i);
+		dev->pwl[1][i] = tmp.at(2*i + 1);
+		std::cout << dev->pwl[0][i] << ' ' << dev->pwl[1][i] << std::endl;
 	}
 }
 
