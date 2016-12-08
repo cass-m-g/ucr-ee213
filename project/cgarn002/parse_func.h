@@ -31,7 +31,9 @@ extern void ParseCapIC(char *str, char *node1, char *node2, double value, double
 extern void ParseInd(char *str, char *node1, char *node2, double value);
 extern void ParseIndIC(char *str, char *node1, char *node2, double value, double init);
 extern void ParseVsrc(char *str, char *node1, char *node2, double value);
+extern void ParseVsrc(char *str, char *node1, char *node2, char *pwl);
 extern void ParseIsrc(char *str, char *node1, char *node2, double value);
+extern void ParseIsrc(char *str, char *node1, char *node2, char *pwl);
 extern void ParseVCCS(char *str, char *node1, char *node2, char *node3, char *node4, double value);
 extern void Summarize();
 

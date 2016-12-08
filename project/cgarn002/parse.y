@@ -28,14 +28,14 @@ char* alloc_str(char *str);
 /* Redefining data types for the token names */
 
 %token<f> FLOAT
-%token<s> STRING
+%token<s> STRING PWL
 %token<n> INTEGER
 %token<s> RESISTOR CAPACITOR INDUCTOR CURRSRC VOLTSRC
 %token<s> VCCS
 %token<f> VALUE
 %token END EOL 
 
-%type<s> resistor capacitor inductor currsrc voltsrc node variable
+%type<s> resistor capacitor inductor currsrc voltsrc node variable pwl
 %type<s> vccs
 %type<f> value
 
@@ -98,8 +98,16 @@ voltsrc: VOLTSRC node node value
 		{
 			ParseVsrc($1, $2, $3, $4);
 		}
+		| VOLTSRC  node node pwl
+		{
+			ParseVsrc($1, $2, $3, $4);
+		}
 ;
 currsrc: CURRSRC node node value						
+		{
+			ParseIsrc($1, $2, $3, $4);
+		}
+		| CURRSRC node node pwl
 		{
 			ParseIsrc($1, $2, $3, $4);
 		}
@@ -135,6 +143,11 @@ value: VALUE			{$$ = $1;}
 		| FLOAT			{$$ = $1;}
 		| INTEGER		{$$ = $1;}
 ;
+
+pwl: PWL 
+		{
+			$$ = alloc_str($1);
+		}
 
 %%
 

@@ -86,6 +86,13 @@ void Init_MNA_System()
 
 	MNAMatrix.resize(MatrixSize+1,MatrixSize+1);
 	RHS.resize(MatrixSize+1);
+
+	for(i = 0; i<MatrixSize +1; i++){
+		for(j = 0; j<MatrixSize+1; j++){
+			MNAMatrix(i,j) = 0.0;
+		}
+		RHS(i) = 0.0;
+	}
 #endif
 }
 
@@ -163,8 +170,16 @@ void Create_MNA_Matrix()
 	}
 }
 
-void solve_MNA(){
-
+void Solve_MNA(){
+	Eigen::VectorXd x = MNAMatrix.colPivHouseholderQr().solve(RHS);
+	int i, j;
+	
+	printf("\n\nSolution:");
+	for (i = 0; i <= MatrixSize; i++) {
+		printf("\n[%-3d]", i);
+		printf("\t%-12f", x(i) - x(0));
+	}
+	printf("\n");
 }
 
 void Print_MNA_System()
@@ -184,6 +199,7 @@ void Print_MNA_System()
 		}
 		printf("\t%-12f", RHS(i));
 	}
+	printf("\n");
 }
 
 

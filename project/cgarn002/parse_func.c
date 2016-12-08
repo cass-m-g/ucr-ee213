@@ -137,6 +137,23 @@ void ParseVsrc(char *name, char *node1, char *node2, double value)
 	Insert_Device_Entry(name, numnodes, nodelist, value, DEV_VS);
 }
 
+void ParseVsrc(char *name, char *node1, char *node2, char *pwl)
+{
+	int numnodes;
+	Node_Entry **nodelist;
+	
+	printf("[Voltage Source parsed ...]\n");
+	printf("   name=%s, node+=%s, node-=%s, V=%s\n", name, node1, node2, pwl);
+	nVsrc++;
+
+	// Save the device, nodes, value info to the symbol tables.
+	/*numnodes = 2;
+	nodelist = (Node_Entry**)malloc(sizeof(Node_Entry*)*numnodes);
+	nodelist[0] = Insert_Node_Entry(node1);
+	nodelist[1] = Insert_Node_Entry(node2);
+	Insert_Device_Entry(name, numnodes, nodelist, value, DEV_VS);*/
+}
+
 void ParseIsrc(char *name, char *node1, char *node2, double value)
 {
 	int numnodes;
@@ -152,6 +169,23 @@ void ParseIsrc(char *name, char *node1, char *node2, double value)
 	nodelist[0] = Insert_Node_Entry(node1);
 	nodelist[1] = Insert_Node_Entry(node2);
 	Insert_Device_Entry(name, numnodes, nodelist, value, DEV_CS);
+}
+
+void ParseIsrc(char *name, char *node1, char *node2, char *pwl)
+{
+	int numnodes;
+	Node_Entry **nodelist;
+	
+	printf("[Current source parsed ...]\n");
+	printf("   name=%s, node+=%s, node-=%s, I=%s\n", name, node1, node2, pwl);
+	nIsrc++;
+
+	// Save the device, nodes, value info to the symbol tables.
+/*	numnodes = 2;
+	nodelist = (Node_Entry**)malloc(sizeof(Node_Entry*)*numnodes);
+	nodelist[0] = Insert_Node_Entry(node1);
+	nodelist[1] = Insert_Node_Entry(node2);
+	Insert_Device_Entry(name, numnodes, nodelist, value, DEV_CS);*/
 }
 
 void ParseVCCS(char *name, char *node1, char *node2, char *node3, char *node4, double value)

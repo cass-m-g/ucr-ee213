@@ -20,6 +20,7 @@
 ALPHA			[A-Za-z_]
 DIGIT			[0-9]
 ALPHANUM		[A-Za-z_0-9]
+PWL				[Pp][Ww][Ll]\([^\)]*
 STRING			{ALPHANUM}+
 INTEGER			{DIGIT}+
 FLOAT			[\-]?{DIGIT}+"."{DIGIT}+([Ee][\+\-]?{DIGIT}+)?
@@ -104,6 +105,12 @@ END				[\.][Ee][Nn][Dd]
 				yylval.s[strlen(yytext)] = '\0';
 				return STRING;
 				}
+{PWL}		{yylval.s = (char*)malloc((strlen(yytext) + 1) * sizeof(char)); 
+				strcpy(yylval.s, yytext);
+				yylval.s[strlen(yytext)] = '\0';
+				return PWL;
+				}
+
 {EOL}			{return EOL;}
 <<EOF>>			{ return EOF; /* yyterminate(); */}
 {DELIMITER}		{ /* yylloc->step(); */}

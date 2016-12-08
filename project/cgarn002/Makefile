@@ -23,7 +23,7 @@ parse: parse.lex parse.y
 	flex -oparse.yy.c parse.lex
 	bison -d parse.y
 
-main.o: main.c MNA_Matrix.h parse_func.h Symbol_Table.h
+main.o: main.c MNA_Matrix.h parse_func.h Symbol_Table.h parse.lex parse.y
 	$(CC) $(CFLAGS) main.c
 
 MNA_Matrix.o: MNA_Matrix.h MNA_Matrix.c parse_func.h Symbol_Table.h
