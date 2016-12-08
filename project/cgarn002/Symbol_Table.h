@@ -12,6 +12,9 @@
 #ifndef SYMBLE_TABLE_H
 #define SYMBLE_TABLE_H
 
+#include <utility>
+#include <vector>
+
 /**
 	A node struct constituting a node table.
 	To be used for parsing netlist.
@@ -45,6 +48,8 @@ struct device_s {
 	void *device;	// points to a device instance in the future
 	struct device_s *prev;
 	struct device_s *next;
+
+	std::vector<std::pair<double, double> > pwl;
 };
 typedef struct device_s Device_Entry;
 
@@ -69,6 +74,8 @@ void Print_Node_Table();
 Device_Entry*   	Lookup_Device_Entry(const char *name);
 Device_Entry*   	Insert_Device_Entry(const char *name,  const int numnodes, 
 				Node_Entry **nodelist, const double value, device_type type);
+Device_Entry*   	Insert_Device_Entry(const char *name,  const int numnodes, 
+				Node_Entry **nodelist,device_type type);
 
 void Delete_Device_Entry(const char *name);
 void Delete_Device_Table();

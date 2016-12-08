@@ -16,6 +16,7 @@ Author(s):
 
 #include "parse_func.h"
 #include "Symbol_Table.h"
+#include <iostream>
 
 // Global variables defined for the parser utility functions
 int nRes;
@@ -177,15 +178,16 @@ void ParseIsrc(char *name, char *node1, char *node2, char *pwl)
 	Node_Entry **nodelist;
 	
 	printf("[Current source parsed ...]\n");
-	printf("   name=%s, node+=%s, node-=%s, I=%s\n", name, node1, node2, pwl);
+	//printf("   name=%s, node+=%s, node-=%s, I=%s\n", name, node1, node2, pwl);
 	nIsrc++;
 
 	// Save the device, nodes, value info to the symbol tables.
-/*	numnodes = 2;
+	numnodes = 2;
 	nodelist = (Node_Entry**)malloc(sizeof(Node_Entry*)*numnodes);
 	nodelist[0] = Insert_Node_Entry(node1);
 	nodelist[1] = Insert_Node_Entry(node2);
-	Insert_Device_Entry(name, numnodes, nodelist, value, DEV_CS);*/
+	Device_Entry* dev = Insert_Device_Entry(name, numnodes, nodelist, DEV_CS);
+	ParsePWL(pwl, dev->pwl);
 }
 
 void ParseVCCS(char *name, char *node1, char *node2, char *node3, char *node4, double value)
@@ -206,6 +208,28 @@ void ParseVCCS(char *name, char *node1, char *node2, char *node3, char *node4, d
 	nodelist[2] = Insert_Node_Entry(node3);
 	nodelist[3] = Insert_Node_Entry(node4);
 	Insert_Device_Entry(name, numnodes, nodelist, value, DEV_VCCS);
+}
+
+void ParsePWL(char *pwl, std::vector<std::pair<double, double> > &ret)
+{
+	std::vector<double> tmp;
+	pwl[strlen(pwl)-2] = '\0';
+	std::string num = "";
+	for(int i = 0; pwl[i] && i < strlen(pwl) - 1; i++){
+		if(isdigit(pwl[i]) || pwl[i] == '.' || (num != ""&& (pwl[i] == 'e' || pwl[i] == '-' || pwl[i] == '+')))
+			num += pwl[i];
+		else if(num != ""){
+			double n = atof(num.c_str());
+			tmp.push_back(n);
+			num = "";
+		}
+	}
+	for(int i = 0; i < tmp.size() -1; i+=2){
+		ret.push_back(std::make_pair(tmp.at(i), tmp.at(i+1)));
+	}
+	for(int i = 0; i < ret.size(); i++){
+		std::cout << ret.at(i).first << ' ' << ret.at(i).second << std::endl;
+	}
 }
 
 

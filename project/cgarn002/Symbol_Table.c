@@ -17,6 +17,8 @@
 #include <stdio.h> 
 #include <stdlib.h> 
 #include <string.h>
+#include <vector>
+#include <utility>
 #include "Symbol_Table.h"
 
 // Electric type of a node variable
@@ -164,6 +166,25 @@ Device_Entry* Insert_Device_Entry(const char *name,  const int numnodes,
 	return ret;
 }
 
+Device_Entry* Insert_Device_Entry(const char *name,  const int numnodes, 
+				Node_Entry **nodelist, device_type type)
+{
+	Device_Entry *ret;
+	if(ret = Lookup_Device_Entry(name)){
+		return ret;
+	}
+
+	ret = (Device_Entry*)malloc(sizeof(Device_Entry));
+	ret->name = name;
+	ret->numnodes = numnodes;
+	ret->nodelist = nodelist;
+	ret->type = type;
+	ret->next = DeviceTableHead;
+	if(DeviceTableHead) DeviceTableHead->prev = ret;
+	DeviceTableHead = ret;
+	++DeviceTableSize;
+	return ret;
+}
 
 void Print_Node_Table()
 {

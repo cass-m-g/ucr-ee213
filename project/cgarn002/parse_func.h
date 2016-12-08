@@ -15,6 +15,8 @@ Author(s):
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <utility>
+#include <vector>
 
 // Global variables defined for the parser utility functions
 extern int nRes;
@@ -35,6 +37,7 @@ extern void ParseVsrc(char *str, char *node1, char *node2, char *pwl);
 extern void ParseIsrc(char *str, char *node1, char *node2, double value);
 extern void ParseIsrc(char *str, char *node1, char *node2, char *pwl);
 extern void ParseVCCS(char *str, char *node1, char *node2, char *node3, char *node4, double value);
+void ParsePWL(char *pwl,std::vector<std::pair<double, double> > &ret);
 extern void Summarize();
 
 #endif
