@@ -237,6 +237,12 @@ void ParsePWL(char *pwl, Device_Entry* dev)
 		dev->pwl[0][i] = tmp.at(2*i);
 		dev->pwl[1][i] = tmp.at(2*i + 1);
 	}
+
+	//print pwl to check correct'
+/*	for(int i = 0; i < dev->pwlSize; i++){
+		printf("%f\t%f\n",dev->pwl[0][i], dev->pwl[1][i]);
+	}
+	*/
 }
 
 

@@ -21,6 +21,7 @@
 #include "MNA_Matrix.h"
 #include "parse_func.h"
 #include "Eigen/Dense"
+#include "Eigen/Sparse"
 
 #define WARNING_DIV_BY_ZERO \
 		printf("\nWarning: divide by zero.");
@@ -32,6 +33,7 @@ Eigen::VectorXd InitialRHS;
 int eqnIndex = 0; //index of extra equations
 double timeStep = 1; //in ns
 double endTime = 10; //in ns
+bool toggleGroundRef = false;
 
 /**
 	Assign indexes to all nodes in the node table.
@@ -223,19 +225,31 @@ void Create_MNA_Matrix()
 
 void Solve_MNA(){
 	int i, j;
+	printf("\n\n%f", endTime);
 	printf("\n\nSolution with ground calculated:\n");
 	printf("Time\\Nodes");
 	for (i = 0; i <= MatrixSize; i++) {
 		printf("\t%-12d", i);
 	}
 
+	Eigen::SparseMatrix<double, Eigen::ColMajor> sparse = MNAMatrix.sparseView();
+	sparse.makeCompressed();
+	Eigen::SimplicialLDLT<Eigen::SparseMatrix<double> > solver;
+	solver.compute(sparse);
+
 	for(double i = 0; i <= endTime; i+=timeStep){
 		//solve for voltages/currents
-		Eigen::VectorXd ans  = MNAMatrix.colPivHouseholderQr().solve(RHS);
+		Eigen::VectorXd ans;
+		if(MatrixSize <= 50) ans = MNAMatrix.colPivHouseholderQr().solve(RHS);
+		else ans = solver.solve(RHS);
 		if(i-(int)i == 0.0)printf("\n[%4dns]",(int)i);
 		else printf("\n[%4fns]",i);
-		for(int j = 0; j <= MatrixSize; j++)
-			printf("\t%-12f", ans(j));
+		for(int j = 0; j <= MatrixSize; j++){
+			if(toggleGroundRef)
+				printf("\t%-12e", ans(j) - ans(0));
+			else
+				printf("\t%-12e", ans(j));
+		}
 
 		// no need to update again
 		if(i+timeStep>endTime)
@@ -254,6 +268,7 @@ void RecalculateRHS(double time, Eigen::VectorXd &ans)
 	//update voltages/currents
 	for(int j = 0; j < UpdateDeviceListSize; j++){
 		Device_Entry* dev = UpdateDeviceList[j];
+		if(dev==NULL) return; //wtf???
 		switch(dev->type){
 			case DEV_VS:
 				if(dev->pwlIndex+1 < dev->pwlSize 
@@ -300,7 +315,7 @@ void Print_MNA_System()
 	for (i = 0; i <= MatrixSize; i++) {
 		printf("\n[%-3d]", i);
 		for (j = 0; j <= MatrixSize; j++) {
-			printf("\t%-12f", MNAMatrix(i,j));
+			printf("\t%-12e", MNAMatrix(i,j));
 		}
 		printf("\t%-12f", RHS(i));
 	}

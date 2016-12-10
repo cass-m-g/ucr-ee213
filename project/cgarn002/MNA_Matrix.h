@@ -23,6 +23,7 @@ extern int MatrixSize;	// size of the MNA matrix (i.e., the max dimension)
 extern Eigen::MatrixXd MNAMatrix;
 extern Eigen::VectorXd RHS;
 extern Eigen::VectorXd InitialRHS;
+extern bool toggleGroundRef;
 
 
 void Create_MNA_Matrix();

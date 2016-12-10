@@ -45,7 +45,7 @@ void Call_Parser(char *filename)
 
 	Init_MNA_System();
 	Create_MNA_Matrix();
-	Print_MNA_System();
+	//Print_MNA_System();
 	Solve_MNA();
 }
 
@@ -67,6 +67,9 @@ int main(int argc, char **args)
 		printf("Please provide an input file.\n");
 		exit(0);
 	}
+
+	if(argc>2)
+		toggleGroundRef = args[2];
 
 	Call_Parser( args[1] );
 
