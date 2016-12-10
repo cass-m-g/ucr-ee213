@@ -20,7 +20,7 @@
 ALPHA			[A-Za-z_]
 DIGIT			[0-9]
 ALPHANUM		[A-Za-z_0-9]
-PWL				[Pp][Ww][Ll]\([^\)]*
+PWL				[Pp][Ww][Ll]\([^\)]*\)
 STRING			{ALPHANUM}+
 INTEGER			{DIGIT}+
 FLOAT			[\-]?{DIGIT}+"."{DIGIT}+([Ee][\+\-]?{DIGIT}+)?

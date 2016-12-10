@@ -28,7 +28,10 @@
 int MatrixSize = 0;	// size of the MNA matrix (i.e., the max dimension)
 Eigen::MatrixXd MNAMatrix;
 Eigen::VectorXd RHS;
+Eigen::VectorXd InitialRHS;
 int eqnIndex = 0; //index of extra equations
+double timeStep = 1; //in ns
+double endTime = 10; //in ns
 
 /**
 	Assign indexes to all nodes in the node table.
@@ -86,12 +89,14 @@ void Init_MNA_System()
 
 	MNAMatrix.resize(MatrixSize+1,MatrixSize+1);
 	RHS.resize(MatrixSize+1);
+	InitialRHS.resize(MatrixSize+1);
 
 	for(i = 0; i<MatrixSize +1; i++){
 		for(j = 0; j<MatrixSize+1; j++){
 			MNAMatrix(i,j) = 0.0;
 		}
 		RHS(i) = 0.0;
+		InitialRHS(i) = 0.0;
 	}
 #endif
 }
@@ -107,6 +112,7 @@ void Init_MNA_System()
 void Create_MNA_Matrix()
 {
 	Device_Entry *dev;
+	//Fill MNA at time 0 assuming 1ns timestep
 	for(dev = DeviceTableHead; dev; dev = dev->next){
 		int indxp, indxm, indxcp, indxcm;
 		if(dev->numnodes >= 2){
@@ -124,19 +130,40 @@ void Create_MNA_Matrix()
 			case DEV_INDUCTOR:
 				MNAMatrix(eqnIndex,indxp) += 1;
 				MNAMatrix(eqnIndex,indxm) += -1;
-				MNAMatrix(eqnIndex,eqnIndex) += -val;
+				MNAMatrix(eqnIndex,eqnIndex) += -val/timeStep;
 				MNAMatrix(indxp,eqnIndex) += 1;
 				MNAMatrix(indxm,eqnIndex) += -1;
+				dev->index_i = eqnIndex;
+				dev->needs_updating = true;
+				UpdateDeviceListSize++;
 				++eqnIndex;				
 				break;
 			case DEV_CAPACITOR:
-				MNAMatrix(indxp,indxp) += val;
-				MNAMatrix(indxp,indxm) += -val;
-				MNAMatrix(indxm,indxp) += -val;
-				MNAMatrix(indxm,indxm) += val;
-
+				MNAMatrix(indxp,indxp) += val/timeStep;
+				MNAMatrix(indxp,indxm) += -val/timeStep;
+				MNAMatrix(indxm,indxp) += -val/timeStep;
+				MNAMatrix(indxm,indxm) += val/timeStep;
+				dev->index_i = indxp;
+				dev->index_j = indxm;
+				dev->needs_updating = true;
+				UpdateDeviceListSize++;
 				break;
 			case DEV_VS:
+				if(dev->pwl){
+					dev->index_i = eqnIndex;
+					dev->needs_updating = true;
+					UpdateDeviceListSize++;
+					if(dev->pwl[0][0] == 0){
+						val = dev->pwl[1][0];
+						dev->pwlIndex++;
+					}
+
+					if(dev->pwl[0][dev->pwlSize - 1] > endTime)
+						endTime = dev->pwl[0][dev->pwlSize - 1];
+				}
+				else{
+					InitialRHS(eqnIndex) += val;
+				}
 				MNAMatrix(eqnIndex,indxp) += 1;
 				MNAMatrix(eqnIndex,indxm) += -1;
 				MNAMatrix(indxp,eqnIndex) += 1;
@@ -145,6 +172,22 @@ void Create_MNA_Matrix()
 				++eqnIndex;				
 				break;
 			case DEV_CS:
+				if(dev->pwl){
+					dev->index_i = indxp;
+					dev->index_j = indxm;
+					dev->needs_updating = true;
+					UpdateDeviceListSize++;
+					if(dev->pwl[0][0] == 0){
+						val = dev->pwl[1][0];
+						dev->pwlIndex++;
+					}
+					if(dev->pwl[0][dev->pwlSize - 1] > endTime)
+						endTime = dev->pwl[0][dev->pwlSize - 1];
+				}
+				else{
+					InitialRHS(indxp)+= -val;
+					InitialRHS(indxm)+= val;
+				}
 				RHS(indxp) += -val;
 				RHS(indxm) += val;	
 				break;
@@ -168,18 +211,80 @@ void Create_MNA_Matrix()
 				break;
 		}
 	}
+
+	UpdateDeviceList = (Device_Entry**)malloc(sizeof(Device_Entry*)*UpdateDeviceListSize);
+	//add all devices that need to be updated in list
+	int i;
+	for(dev = DeviceTableHead, i = 0; dev && i<UpdateDeviceListSize; dev = dev->next, i++){
+		if(dev->needs_updating)
+			UpdateDeviceList[i] = dev;
+	}
 }
 
 void Solve_MNA(){
-	Eigen::VectorXd x = MNAMatrix.colPivHouseholderQr().solve(RHS);
 	int i, j;
-	
-	printf("\n\nSolution:");
+	printf("\n\nSolution with ground calculated:\n");
+	printf("Time\\Nodes");
 	for (i = 0; i <= MatrixSize; i++) {
-		printf("\n[%-3d]", i);
-		printf("\t%-12f", x(i) - x(0));
+		printf("\t%-12d", i);
 	}
-	printf("\n");
+
+	for(double i = 0; i <= endTime; i+=timeStep){
+		//solve for voltages/currents
+		Eigen::VectorXd ans  = MNAMatrix.colPivHouseholderQr().solve(RHS);
+		if(i-(int)i == 0.0)printf("\n[%4dns]",(int)i);
+		else printf("\n[%4fns]",i);
+		for(int j = 0; j <= MatrixSize; j++)
+			printf("\t%-12f", ans(j));
+
+		// no need to update again
+		if(i+timeStep>endTime)
+			return;
+
+		RecalculateRHS(i, ans);
+
+	}
+
+	printf("\n\n");
+}
+
+void RecalculateRHS(double time, Eigen::VectorXd &ans)
+{
+	RHS = InitialRHS;
+	//update voltages/currents
+	for(int j = 0; j < UpdateDeviceListSize; j++){
+		Device_Entry* dev = UpdateDeviceList[j];
+		switch(dev->type){
+			case DEV_VS:
+				if(dev->pwlIndex+1 < dev->pwlSize 
+					&& dev->pwl[0][dev->pwlIndex+1] >= time){
+					dev->pwlIndex++;
+				}
+				RHS(dev->index_i) += dev->pwl[1][dev->pwlIndex];
+				break;
+
+			case DEV_CS:
+				if(dev->pwlIndex+1 < dev->pwlSize 
+					&& dev->pwl[0][dev->pwlIndex+1] >= time){
+					dev->pwlIndex++;
+				}
+				RHS(dev->index_i) += -dev->pwl[1][dev->pwlIndex];
+				RHS(dev->index_j) += dev->pwl[1][dev->pwlIndex];
+				break;
+
+			case DEV_INDUCTOR:
+				RHS(dev->index_i) += -ans(dev->index_i)*dev->value/timeStep;
+				break;
+
+			case DEV_CAPACITOR:
+				RHS(dev->index_i) += ans(dev->index_i)*dev->value/timeStep;
+				RHS(dev->index_j) += -ans(dev->index_j)*dev->value/timeStep;
+				break;
+			default:
+				//do nothing
+				break;
+		}
+	}
 }
 
 void Print_MNA_System()

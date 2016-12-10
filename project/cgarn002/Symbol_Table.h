@@ -49,16 +49,22 @@ struct device_s {
 	struct device_s *prev;
 	struct device_s *next;
 
-	double *pwl[2];
+	double **pwl; //index 0 is time
+	int pwlSize;
+	int pwlIndex;
+	int index_i, index_j;
+	bool needs_updating;
 };
 typedef struct device_s Device_Entry;
-
 
 extern Node_Entry *NodeTableHead;
 extern int NodeTableSize;
 
 extern Device_Entry *DeviceTableHead;
 extern int DeviceTableSize;
+
+extern Device_Entry **UpdateDeviceList;
+extern int UpdateDeviceListSize;
 
 
 void Init_Symbol_Tables();

@@ -22,6 +22,7 @@
 extern int MatrixSize;	// size of the MNA matrix (i.e., the max dimension)
 extern Eigen::MatrixXd MNAMatrix;
 extern Eigen::VectorXd RHS;
+extern Eigen::VectorXd InitialRHS;
 
 
 void Create_MNA_Matrix();
@@ -30,6 +31,7 @@ void Get_MNA_System(double **A, double **b);
 void Index_All_Nodes();
 void Init_MNA_System();
 void Solve_MNA();
+void RecalculateRHS(double time, Eigen::VectorXd &ans);
 void Print_MNA_System();
 
 

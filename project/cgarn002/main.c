@@ -46,6 +46,7 @@ void Call_Parser(char *filename)
 	Init_MNA_System();
 	Create_MNA_Matrix();
 	Print_MNA_System();
+	Solve_MNA();
 }
 
 /**

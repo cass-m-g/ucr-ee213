@@ -229,6 +229,8 @@ void ParsePWL(char *pwl, Device_Entry* dev)
 
 	// add info to pwl in dev
 	int size = tmp.size()/2;
+	dev->pwlSize = size;
+	dev->pwl = (double**)malloc(sizeof(double*)*2);
 	dev->pwl[0] = (double*)malloc(sizeof(double)*size);
 	dev->pwl[1] = (double*)malloc(sizeof(double)*size);
 	for(int i = 0;i < size; i++){

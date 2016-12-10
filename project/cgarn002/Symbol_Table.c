@@ -36,6 +36,9 @@ int NodeTableSize;
 Device_Entry *DeviceTableHead;
 int DeviceTableSize;
 
+Device_Entry **UpdateDeviceList;
+int UpdateDeviceListSize;
+
 
 void Init_Symbol_Tables()
 {
@@ -159,6 +162,7 @@ Device_Entry* Insert_Device_Entry(const char *name,  const int numnodes,
 	ret->nodelist = nodelist;
 	ret->value = value;
 	ret->type = type;
+	ret->pwl = NULL;
 	ret->next = DeviceTableHead;
 	if(DeviceTableHead) DeviceTableHead->prev = ret;
 	DeviceTableHead = ret;
@@ -180,6 +184,7 @@ Device_Entry* Insert_Device_Entry(const char *name,  const int numnodes,
 	ret->nodelist = nodelist;
 	ret->type = type;
 	ret->next = DeviceTableHead;
+	ret->pwl = NULL;
 	if(DeviceTableHead) DeviceTableHead->prev = ret;
 	DeviceTableHead = ret;
 	++DeviceTableSize;
